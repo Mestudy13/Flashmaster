@@ -1,0 +1,282 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#202725">
+  <title>FlashMaster — Study smarter</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="splash-screen">
+    <div class="splash-content">
+      <div class="brand-mark">✦</div>
+      <h1>FlashMaster</h1>
+      <p>Make every review count.</p>
+    </div>
+  </div>
+
+  <header class="app-header">
+    <div class="header-inner">
+      <a class="brand" href="#" onclick="showSection('reviewDecksSection'); return false;">
+        <span class="brand-mark">✦</span>
+        <span class="brand-copy">
+          <strong>FlashMaster</strong>
+          <small>Your personal study space</small>
+        </span>
+      </a>
+
+      <div class="header-actions">
+        <div class="notification-control">
+          <label for="notificationInterval">Due reminders</label>
+          <select id="notificationInterval" class="utility-select" aria-label="How often FlashMaster should notify you about due flashcards">
+            <option value="off">Notifications: Off</option>
+            <option value="1m">Every minute</option>
+            <option value="5m">Every 5 minutes</option>
+            <option value="10m">Every 10 minutes</option>
+            <option value="30m">Every 30 minutes</option>
+            <option value="1h">Every hour</option>
+            <option value="2h">Every 2 hours</option>
+            <option value="1d">Every day</option>
+            <option value="1w">Every week</option>
+          </select>
+        </div>
+        <button id="toggleTheme" class="utility-button" type="button">
+          ☼ Theme
+        </button>
+      </div>
+    </div>
+
+    <nav aria-label="Main navigation">
+      <button class="nav-button" onclick="showSection('reviewDecksSection')" type="button">▦ Review decks</button>
+      <button class="nav-button" onclick="showSection('todayReviewSection')" type="button">◷ Today's review</button>
+      <button class="nav-button" onclick="showSection('addFlashcardSection')" type="button">＋ Add flashcard</button>
+      <button class="nav-button" onclick="showSection('manageSection')" type="button">▤ Folders & decks</button>
+      <button class="nav-button" onclick="showSection('difficultySection')" type="button">⌁ Difficulty zones</button>
+      <button class="nav-button" onclick="showStats()" type="button">▥ Statistics</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="welcome-strip">
+      <div>
+        <p class="eyebrow">YOUR STUDY SPACE</p>
+        <h1>Small steps. Lasting knowledge.</h1>
+        <p>Keep learning, one flashcard at a time.</p>
+      </div>
+      <div class="welcome-symbol" aria-hidden="true">✧</div>
+    </section>
+
+    <section id="manageSection" class="section hidden">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">ORGANISE</p>
+          <h2>Folders & decks</h2>
+          <p class="section-description">Build a structure that works for the way you study.</p>
+        </div>
+      </div>
+
+      <div class="folder-management-toolbar">
+        <div class="folder-tree-search">
+          <label for="folderTreeSearch">Find a folder or deck</label>
+          <input type="search" id="folderTreeSearch" placeholder="Search folders and decks…" autocomplete="off">
+        </div>
+        <button id="toggleAllFolders" class="secondary-button" type="button" aria-expanded="true">⌄ Collapse all</button>
+      </div>
+      <div id="folderTree" class="folder-tree"></div>
+
+      <div class="form-grid">
+        <div class="form-panel">
+          <h3>Create a folder</h3>
+          <form id="folderForm">
+            <label for="folderName">Folder name</label>
+            <input type="text" id="folderName" placeholder="e.g. Science" required>
+            <label for="parentFolder">Parent folder <span class="optional">(optional)</span></label>
+            <select id="parentFolder">
+              <option value="">None — top level</option>
+            </select>
+            <button class="primary-button" type="submit">＋ Create folder</button>
+          </form>
+        </div>
+
+        <div class="form-panel">
+          <h3>Create a deck</h3>
+          <form id="deckForm">
+            <label for="deckName">Deck name</label>
+            <input type="text" id="deckName" placeholder="e.g. Cell biology" required>
+            <label for="deckFolder">Choose a folder</label>
+            <select id="deckFolder" required></select>
+            <button class="primary-button" type="submit">＋ Create deck</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="form-panel backup-panel">
+        <div>
+          <h3>Backup & restore</h3>
+          <p class="section-description">Save your study data or restore it from a JSON backup.</p>
+        </div>
+        <div class="backup-controls">
+          <button id="exportData" class="secondary-button" type="button">↓ Export backup</button>
+          <label for="importData">Choose backup file</label>
+          <input type="file" id="importData" accept=".json,application/json">
+          <button id="importButton" class="secondary-button" type="button">↑ Import backup</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="addFlashcardSection" class="section hidden">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">GROW YOUR KNOWLEDGE</p>
+          <h2>Add a flashcard</h2>
+          <p class="section-description">Create a clear question and an answer you can recall.</p>
+        </div>
+      </div>
+
+      <form id="flashcardForm" class="form-panel flashcard-form">
+        <div class="form-grid">
+          <div class="field-full">
+            <label for="fcQuestion">Question</label>
+            <textarea id="fcQuestion" rows="3" placeholder="What do you want to remember?" required></textarea>
+          </div>
+          <div class="field-full">
+            <label for="fcAnswerMode">Answer method</label>
+            <select id="fcAnswerMode">
+              <option value="flip">Flip card to reveal answer</option>
+              <option value="write">Write answer before revealing</option>
+            </select>
+            <p class="field-hint">Choose whether to flip the card or type your answer during review.</p>
+          </div>
+          <div class="field-full">
+            <label for="fcAnswer">Answer</label>
+            <textarea id="fcAnswer" rows="3" placeholder="Write the correct answer here…" required></textarea>
+          </div>
+          <div>
+            <label for="fcSubject">Subject</label>
+            <input type="text" id="fcSubject" placeholder="e.g. Biology" required>
+          </div>
+          <div>
+            <label for="fcDeck">Choose a deck</label>
+            <select id="fcDeck" required></select>
+          </div>
+          <div>
+            <label for="fcImage">Image <span class="optional">(optional)</span></label>
+            <input type="file" id="fcImage" accept="image/*">
+          </div>
+          <div>
+            <label for="fcAudio">Audio <span class="optional">(optional)</span></label>
+            <input type="file" id="fcAudio" accept="audio/*">
+          </div>
+          <div class="field-full">
+            <label for="fcType">Flashcard type</label>
+            <select id="fcType" required>
+              <option value="basic">Front and back</option>
+              <option value="written">Written answer</option>
+              <option value="multiple">Multiple choice</option>
+            </select>
+          </div>
+          <div id="mcOptions" class="hidden field-full mc-options-editor">
+            <div class="mc-options-heading">
+              <div>
+                <label>Answer options</label>
+                <p class="field-hint">Add the choices and tick every option that is correct. You can have more than one correct answer.</p>
+              </div>
+              <button type="button" id="addMCOption" class="secondary-button">＋ Add option</button>
+            </div>
+            <div id="fcMCOptionList" class="mc-option-list"></div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="primary-button" type="submit">＋ Add flashcard</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="reviewDecksSection" class="section hidden">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">KEEP YOUR MOMENTUM</p>
+          <h2>Review your decks</h2>
+          <p class="section-description">Choose a deck and work through the cards at your own pace.</p>
+        </div>
+      </div>
+      <div class="search-box">
+        <label for="deckSearchQuery">Find a deck</label>
+        <input type="search" id="deckSearchQuery" placeholder="Search by deck name…" oninput="renderDeckList()">
+      </div>
+      <div class="mix-decks-panel">
+        <div>
+          <h3>Mix decks</h3>
+          <p class="section-description">Select two or more decks to practise their cards together. This is a temporary session; your cards stay in their original decks.</p>
+        </div>
+        <div id="mixDeckSelection" class="mix-deck-selection"></div>
+        <div class="mix-deck-actions">
+          <label class="mix-shuffle-label"><input type="checkbox" id="mixShuffle" checked> Shuffle mixed cards</label>
+          <button type="button" class="primary-button" id="startMixedReview">Start mixed review</button>
+        </div>
+      </div>
+      <div id="deckList" class="deck-list"></div>
+    </section>
+
+    <section id="deckFlashcardsSection" class="section hidden">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">DECK REVIEW</p>
+          <h2 id="deckFlashcardsTitle">Deck flashcards</h2>
+          <p class="section-description">Review each card, then rate how well you knew it.</p>
+        </div>
+        <button class="secondary-button" onclick="showSection('reviewDecksSection')" type="button">← Back to decks</button>
+      </div>
+      <div id="deckFlashcardsContainer"></div>
+    </section>
+
+    <section id="todayReviewSection" class="section hidden">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">SPACED REPETITION</p>
+          <h2>Today's review</h2>
+          <p class="section-description">Cards scheduled for today, gathered from all your decks.</p>
+        </div>
+      </div>
+      <div id="todayFlashcardsContainer"></div>
+    </section>
+
+    <section id="difficultySection" class="section hidden">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">LEARN FROM YOUR REVIEWS</p>
+          <h2>Difficulty zones</h2>
+          <p class="section-description">Find cards you've marked as easy, medium, hard or not yet known.</p>
+        </div>
+      </div>
+      <div id="difficultyZonesContainer"></div>
+      <section class="difficulty-practice-section" aria-label="Difficulty zone practice">
+        <h3>Practise a difficulty zone</h3>
+        <p class="section-description">Choose a zone above to practise its cards. Simply viewing or flipping cards does not change their review dates; only rating a card updates its schedule.</p>
+        <div id="difficultyReviewContainer"></div>
+      </section>
+    </section>
+
+    <section id="statsSection" class="section hidden">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">YOUR PROGRESS</p>
+          <h2>Study statistics</h2>
+          <p class="section-description">A snapshot of your growing collection.</p>
+        </div>
+      </div>
+      <div id="stats" class="stats"></div>
+    </section>
+
+    <footer class="app-footer">
+      <span>FlashMaster</span>
+      <span>Consistency over perfection.</span>
+    </footer>
+  </main>
+
+  <!-- Keep this at the end so the page elements exist before script.js runs. -->
+  <script src="script.js"></script>
+</body>
+</html>
